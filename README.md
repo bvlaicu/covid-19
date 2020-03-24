@@ -30,3 +30,5 @@ sudo docker exec addon_a0d7b954_influxdb influx -username homeassistant -passwor
 sudo docker cp covid-write-points.txt addon_a0d7b954_influxdb:/
 sudo docker exec addon_a0d7b954_influxdb influx -username homeassistant -password ${IP} -database covid-19 -import -path=covid-write-points.txt -precision=ns
 ```
+
+Import the dashboard json into your Grafana.
