@@ -32,3 +32,5 @@ sudo docker exec addon_a0d7b954_influxdb influx -username homeassistant -passwor
 ```
 
 Import the dashboard json into your Grafana.
+
+![Image description](Grafana-Covid.png)
