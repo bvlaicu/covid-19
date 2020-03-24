@@ -7,6 +7,11 @@ from datetime import datetime
 
 out = open('covid-write-points.txt', 'w')
 
+out.write("%s\n" % "# DML")
+out.write("%s\n" % "# CONTEXT-DATABASE: covid-19")
+out.write("%s\n" % "# CONTEXT-RETENTION-POLICY: autogen")
+out.write("%s\n" % "")
+
 types = ['Confirmed', 'Recovered', 'Deaths']
 
 for type in types:
