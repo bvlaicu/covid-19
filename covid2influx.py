@@ -34,5 +34,5 @@ for type in types:
                 # print(value)
                 if value not in (None, "", 'nan'):
                     write_point = 'people,type=' + type + ',Country/Region=' + country + ',Province/State=' + state + ',Lat=' + lat + ',Long=' + long + ' value=' + value + ' ' + str(epoch_time_nano)
-                    print(write_point)
+                    # print(write_point)
                     out.write("%s\n" % write_point)
