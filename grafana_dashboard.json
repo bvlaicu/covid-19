@@ -16,13 +16,15 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 12,
-  "iteration": 1585005502594,
+  "iteration": 1585091916151,
   "links": [],
   "panels": [
     {
       "aliasColors": {
+        "China": "yellow",
         "Germany": "light-green",
         "Italy": "blue",
+        "Spain": "brown",
         "US": "red",
         "worldwide_coronavirus_confirmed": "yellow",
         "worldwide_coronavirus_confirmed / day": "yellow",
@@ -55,7 +57,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
-        "sideWidth": 400,
+        "sideWidth": 450,
         "sort": "current",
         "sortDesc": true,
         "total": false,
@@ -107,7 +109,7 @@
           "measurement": "people",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT sum(\"value\") FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND $timeFilter GROUP BY time($__interval), \"Country/Region\", \"type\" fill(null)",
+          "query": "SELECT sum(\"value\") FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND (\"Country/Region\" =~ /$country/) AND (\"Province/State\" =~ /$province/) AND $timeFilter GROUP BY time($__interval), \"Country/Region\", \"type\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -138,7 +140,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total $Type by Country",
+      "title": "Total $Type by Country/Region",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -179,6 +181,7 @@
       "aliasColors": {
         "Germany": "light-green",
         "Italy": "blue",
+        "Spain": "brown",
         "US": "red",
         "worldwide_coronavirus_confirmed": "yellow",
         "worldwide_coronavirus_confirmed / day": "yellow",
@@ -211,7 +214,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
-        "sideWidth": 400,
+        "sideWidth": 450,
         "sort": "current",
         "sortDesc": true,
         "total": false,
@@ -263,7 +266,7 @@
           "measurement": "people",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT difference(max(\"value\")) FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND $timeFilter GROUP BY \"Country/Region\", \"type\", time(1d)",
+          "query": "SELECT difference(sum(\"value\")) FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND (\"Country/Region\" =~ /$country/) AND (\"Province/State\" =~ /$province/) AND $timeFilter GROUP BY \"Country/Region\", \"type\", time(1d)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -294,7 +297,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Daily $Type by Country",
+      "title": "Daily $Type by Country/Region",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -333,6 +336,7 @@
     },
     {
       "aliasColors": {
+        "China/Hubei": "yellow",
         "Germany": "light-green",
         "Italy": "blue",
         "Italy/*": "blue",
@@ -369,7 +373,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
-        "sideWidth": 400,
+        "sideWidth": 450,
         "sort": "current",
         "sortDesc": true,
         "total": false,
@@ -427,7 +431,7 @@
           "measurement": "people",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT sum(\"value\") FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND $timeFilter GROUP BY time($__interval), \"Country/Region\", \"type\", \"Province/State\" fill(null)",
+          "query": "SELECT sum(\"value\") FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND (\"Country/Region\" =~ /$country/) AND (\"Province/State\" =~ /$province/) AND (\"Province/State\" != '*') AND $timeFilter GROUP BY time($__interval), \"Country/Region\", \"type\", \"Province/State\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -458,7 +462,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total $Type by Region",
+      "title": "Total $Type by Province/State",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -531,7 +535,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
-        "sideWidth": 400,
+        "sideWidth": 450,
         "sort": "current",
         "sortDesc": true,
         "total": false,
@@ -589,7 +593,178 @@
           "measurement": "people",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT difference(max(\"value\")) FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND $timeFilter GROUP BY \"Country/Region\", \"Province/State\", \"type\", time(1d)",
+          "query": "SELECT difference(sum(\"value\")) FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND (\"Province/State\" != '*') AND (\"Country/Region\" =~ /$country/) AND (\"Province/State\" =~ /$province/) AND $timeFilter GROUP BY \"Country/Region\", \"Province/State\", \"type\", time(1d)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "type",
+              "operator": "=~",
+              "value": "/^$Type$/"
+            },
+            {
+              "condition": "AND",
+              "key": "Country/Region",
+              "operator": "=",
+              "value": "select tag value"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Daily $Type by Province/State",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "locale",
+          "label": "cases",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "China/Hubei": "yellow",
+        "Germany": "light-green",
+        "Italy": "blue",
+        "Italy/*": "blue",
+        "Spain/*": "#99440a",
+        "US": "red",
+        "worldwide_coronavirus_confirmed": "yellow",
+        "worldwide_coronavirus_confirmed / day": "yellow",
+        "worldwide_coronavirus_current": "blue",
+        "worldwide_coronavirus_current / day": "blue",
+        "worldwide_coronavirus_deaths": "red",
+        "worldwide_coronavirus_deaths / day": "red",
+        "worldwide_coronavirus_recovered": "green",
+        "worldwide_coronavirus_recovered / day": "green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Covid-19",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "hiddenSeries": false,
+      "id": 14,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 450,
+        "sort": "current",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_Country/Region]]/[[tag_Province/State]]/[[tag_City]]",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "Country/Region"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "Province/State"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "people",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"value\") FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND (\"Country/Region\" =~ /$country/) AND (\"Province/State\" =~ /$province/) AND (\"City\" =~ /$city/) AND (\"Province/State\" != '*') AND (\"City\" != '*') AND $timeFilter GROUP BY time($__interval), \"type\", \"Country/Region\", \"Province/State\", \"City\"  fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -620,7 +795,175 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Daily $Type by Region",
+      "title": "Total $Type by City/County",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "locale",
+          "label": "cases",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Germany": "light-green",
+        "Italy": "blue",
+        "US": "red",
+        "worldwide_coronavirus_confirmed": "yellow",
+        "worldwide_coronavirus_confirmed / day": "yellow",
+        "worldwide_coronavirus_current": "blue",
+        "worldwide_coronavirus_current / day": "blue",
+        "worldwide_coronavirus_deaths": "red",
+        "worldwide_coronavirus_deaths / day": "red",
+        "worldwide_coronavirus_recovered": "green",
+        "worldwide_coronavirus_recovered / day": "green"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Covid-19",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "hiddenSeries": false,
+      "id": 15,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 450,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_Country/Region]]/[[tag_Province/State]]/[[tag_City]]",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "Country/Region"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "type"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "Province/State"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "people",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT difference(sum(\"value\")) FROM \"people\" WHERE (\"type\" =~ /^$Type$/) AND (\"Province/State\" != '*') AND (\"City\" != '*') AND (\"Country/Region\" =~ /$country/) AND (\"Province/State\" =~ /$province/) AND (\"City\" =~ /$city/) AND $timeFilter GROUP BY \"type\", \"Country/Region\", \"Province/State\", \"City\", time(1d)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "type",
+              "operator": "=~",
+              "value": "/^$Type$/"
+            },
+            {
+              "condition": "AND",
+              "key": "Country/Region",
+              "operator": "=",
+              "value": "select tag value"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Daily $Type by City/County",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -690,11 +1033,76 @@
             "selected": false,
             "text": "Recovered",
             "value": "Recovered"
+          },
+          {
+            "selected": false,
+            "text": "Active",
+            "value": "Active"
           }
         ],
-        "query": "Confirmed, Deaths, Recovered",
+        "query": "Confirmed, Deaths, Recovered,Active",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Country/Region",
+        "name": "country",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Province/State",
+        "name": "province",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "City/County",
+        "name": "city",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
       }
     ]
   },
@@ -719,5 +1127,5 @@
   "timezone": "",
   "title": "COVID-19",
   "uid": "GSZfC-lZz",
-  "version": 33
+  "version": 43
 }
