@@ -12,7 +12,7 @@ out.write("%s\n" % "")
 
 start = datetime.datetime.strptime("01-22-2020", "%m-%d-%Y")
 today = datetime.datetime.today()
-end = today + datetime.timedelta(days = 2) 
+end = today + datetime.timedelta(days = 1) 
 date_generated = [start + datetime.timedelta(days=x) for x in range(0, (end-start).days)]
 
 for date_obj in date_generated:
