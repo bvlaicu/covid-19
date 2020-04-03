@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import datetime
+import pytz
 from urllib.error import HTTPError
 
 out = open('covid-write-points.txt', 'w')
@@ -22,11 +23,13 @@ for date_obj in date_generated:
         csv_file = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/" + date + ".csv"
         df = pd.read_csv(csv_file)
 
-        for index, row in df.iterrows():
-            utc_time = datetime.datetime.strptime(date, "%m-%d-%Y")
-            epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
-            epoch_time_nano = int(epoch_time * 1000 * 1000 * 1000)
+        local_time = datetime.datetime.strptime(date + " 20:00:00", "%m-%d-%Y  %H:%M:%S").astimezone(pytz.timezone('US/Eastern'))
+        utc_time = local_time.astimezone(pytz.utc).replace(tzinfo=None)
+        epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
+        epoch_time_nano = int(epoch_time * 1000 * 1000 * 1000)
+        # print(epoch_time_nano)
 
+        for index, row in df.iterrows():
             if 'Country_Region' in row:
                 country = str(row['Country_Region']).replace(",", "\,").replace(" ", "\ ")
             else:
